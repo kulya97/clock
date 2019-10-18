@@ -7,14 +7,14 @@
     android:orientation="horizontal"
     android:visibility="gone">
 
-    <NumberPicker
+    <com.kulya.clock.view.MyNumberPick
         android:id="@+id/numberpicker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:layout_weight="1"
         android:textColor="@color/textcolor"
-        android:textSize="5dp"></NumberPicker>
+        android:textSize="5dp"></com.kulya.clock.view.MyNumberPick>
 <LinearLayout
     android:layout_width="0dp"
     android:layout_weight="1"
@@ -26,6 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:textSize="14dp"
+        android:textColor="@color/textcolor"
         android:background="@color/windowColor"
         android:text="确认" />
     <View
@@ -37,14 +39,16 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:textSize="14dp"
+        android:textColor="@color/textcolor"
         android:background="@color/windowColor"
         android:text="取消" />
 </LinearLayout>
-    <NumberPicker
+    <com.kulya.clock.view.MyNumberPick
         android:id="@+id/numberpicker2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/textcolor"
-        android:textSize="5dp"></NumberPicker>
+        android:textSize="5dp"></com.kulya.clock.view.MyNumberPick>
 </LinearLayout>

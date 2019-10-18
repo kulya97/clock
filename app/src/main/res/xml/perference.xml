@@ -1,0 +1,55 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="设置">
+        <SwitchPreference
+            android:icon="@mipmap/settings"
+            android:defaultValue="false"
+            android:key="hideSetPage"
+            android:title="隐藏此设置页面" />
+        <SwitchPreference
+            android:icon="@mipmap/settings"
+            android:defaultValue="false"
+            android:key="translate"
+            android:title="背景透明" />
+        <SwitchPreference
+            android:icon="@mipmap/settings"
+            android:defaultValue="false"
+            android:key="black"
+            android:title="黑色模式" />
+        <SwitchPreference
+            android:icon="@mipmap/settings"
+            android:defaultValue="true"
+            android:key="countdown"
+            android:title="关闭倒计时" />
+        <SwitchPreference
+            android:icon="@mipmap/settings"
+            android:defaultValue="false"
+            android:key="statusBar"
+            android:summary="由于安卓限制8.0之后效果不理想"
+            android:title="放在状态栏" />
+        <SwitchPreference
+            android:icon="@mipmap/settings"
+            android:defaultValue="false"
+            android:key="stop"
+            android:title="固定位置" />
+        <SeekBarPreference
+            android:icon="@mipmap/settings"
+            android:defaultValue="14"
+            android:key="textSize"
+            android:max="40"
+            android:title="字体大小"></SeekBarPreference>
+        <SeekBarPreference
+            android:icon="@mipmap/settings"
+            android:defaultValue="90"
+            android:key="backgroundWidth"
+            android:max="200"
+            android:title="悬浮窗宽"></SeekBarPreference>
+        <SeekBarPreference
+            android:icon="@mipmap/settings"
+            android:defaultValue="30"
+            android:key="backgroundHeight"
+            android:max="100"
+            android:title="悬浮窗高"></SeekBarPreference>
+
+    </PreferenceCategory>
+</PreferenceScreen>

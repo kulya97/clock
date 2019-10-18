@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shap"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp">
+
+        <com.kulya.clock.view.MyNumberPick
+            android:id="@+id/numberpicker1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:descendantFocusability="blocksDescendants"
+            android:textColor="@color/textcolor"
+            android:textSize="5dp"></com.kulya.clock.view.MyNumberPick>
+
+        <com.kulya.clock.view.MyNumberPick
+            android:id="@+id/numberpicker2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:descendantFocusability="blocksDescendants"
+            android:textColor="@color/textcolor"
+            android:textSize="5dp"></com.kulya.clock.view.MyNumberPick>
+
+        <com.kulya.clock.view.MyNumberPick
+            android:id="@+id/numberpicker3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:descendantFocusability="blocksDescendants"
+            android:textColor="@color/textcolor"
+            android:textSize="5dp"></com.kulya.clock.view.MyNumberPick>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/countdown"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:text="确认"
+            android:textColor="@color/textcolor"
+            android:textSize="14dp" />
+
+        <Button
+            android:id="@+id/stopcountdown"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:text="取消"
+            android:textColor="@color/textcolor"
+            android:textSize="14dp" />
+    </LinearLayout>
+</LinearLayout>
