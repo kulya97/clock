@@ -6,8 +6,8 @@ android {
         applicationId "com.kulya.clock"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 8
-        versionName "2.11"
+        versionCode 9
+        versionName "2.20"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -36,7 +36,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.3.0-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha02'
-    implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
+
 }

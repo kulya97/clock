@@ -1,25 +1,12 @@
 package com.kulya.clock.view;
 
-import android.app.Activity;
-import android.content.Context;
+
 import android.graphics.Color;
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.widget.Toast;
 
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
-import com.jaredrummler.android.colorpicker.ColorPickerView;
-import com.jaredrummler.android.colorpicker.ColorPreference;
-import com.jaredrummler.android.colorpicker.ColorPreferenceCompat;
-import com.kulya.clock.R;
-import com.kulya.clock.activity.MainActivity;
-import com.kulya.clock.until.Myapplication;
 
-import androidx.annotation.ColorInt;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
-import androidx.preference.PreferenceFragment;
 
 /*
 项目名称： clock

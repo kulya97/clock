@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:layout_weight="1"
-        android:textColor="@color/textcolor"
+        android:textColor="@color/black"
         android:textSize="5dp"></com.kulya.clock.view.MyNumberPick>
 <LinearLayout
     android:layout_width="0dp"
@@ -27,11 +27,11 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:textSize="14dp"
-        android:textColor="@color/textcolor"
+        android:textColor="@color/black"
         android:background="@color/windowColor"
         android:text="确认" />
     <View
-        android:background="@color/textcolor"
+        android:background="@color/black"
         android:layout_width="match_parent"
         android:layout_height="2dp"/>
     <Button
@@ -40,7 +40,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:textSize="14dp"
-        android:textColor="@color/textcolor"
+        android:textColor="@color/black"
         android:background="@color/windowColor"
         android:text="取消" />
 </LinearLayout>
@@ -49,6 +49,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@color/textcolor"
+        android:textColor="@color/black"
         android:textSize="5dp"></com.kulya.clock.view.MyNumberPick>
 </LinearLayout>

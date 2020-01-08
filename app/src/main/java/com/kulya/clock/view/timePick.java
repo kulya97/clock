@@ -16,7 +16,7 @@ import com.kulya.clock.R;
 /*
 项目名称： clock
 创建人：黄大神
-类描述：
+类描述：倒计时时间选择窗口，有问题不能正常显示ui，已经找到问题所在，有空再改
 创建时间：2019/10/17 15:59
 */
 public class timePick extends PopupWindow {
@@ -47,10 +47,10 @@ public class timePick extends PopupWindow {
     }
 
     public void initView() {
-        Calendar calendar2 = Calendar.getInstance();
-        int hour = calendar2.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar2.get(Calendar.MINUTE);
-        int second = calendar2.get(Calendar.SECOND);
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        int second = calendar.get(Calendar.SECOND);
         picker1 = contentView.findViewById(R.id.numberpicker1);
         picker2 = contentView.findViewById(R.id.numberpicker2);
         picker3 = contentView.findViewById(R.id.numberpicker3);

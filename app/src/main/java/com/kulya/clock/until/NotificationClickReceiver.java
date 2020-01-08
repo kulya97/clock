@@ -3,7 +3,6 @@ package com.kulya.clock.until;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.kulya.clock.activity.setActivity;
 

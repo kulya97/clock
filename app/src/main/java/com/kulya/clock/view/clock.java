@@ -1,32 +1,28 @@
 package com.kulya.clock.view;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
+import android.service.quicksettings.Tile;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.TextView;
 
-import com.kulya.clock.activity.MainActivity;
-import com.kulya.clock.service.MyService;
+import com.kulya.clock.service.setservice;
+import com.kulya.clock.service.timeService;
 import com.kulya.clock.until.Myapplication;
 import com.kulya.clock.R;
 import com.kulya.clock.until.settingInfo;
+import com.kulya.clock.until.ScreenTools;
 
-import java.util.Calendar;
-import java.util.Timer;
+import java.net.URL;
+import java.net.URLConnection;
+
 
 /*
 项目名称： clock
@@ -36,24 +32,16 @@ import java.util.Timer;
 */
 public class clock {
     private static clock mClock;
-    private timeHandler timeHandler;
-    private Button imageButton1;
+    private ItemOnClickInterface itemOnClickInterface;
+
+    private floatButton imageButton;
     private LinearLayout toucherLayout;
     private WindowManager.LayoutParams params;
     private WindowManager windowManager;
 
+    private boolean stopMove = settingInfo.getBooleanInfo(settingInfo.Fixed);
 
-    private int Countdown;
-    private int minute;
-    private int second;
-    private int hour;
-    private int minute0;
-    private int second0;
-    private int hour0;
-
-    private boolean isCountdownTask = false;
     private boolean isMove;
-    private boolean stopMove = settingInfo.getBooleanInfo(settingInfo.Stop);
 
     private int statusBarHeight = 0;
     private int x;
@@ -63,62 +51,8 @@ public class clock {
     private int mStartX = 0;
     private int mStartY = 0;
 
-
-    class TimeThread extends Thread {
-        @Override
-        public void run() {
-            while (true) {
-
-                Message msg = new Message();
-                if (!isCountdownTask) msg.what = 1;
-                else msg.what = 2;
-                timeHandler.sendMessage(msg);
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
-    }
-
-    class timeHandler extends Handler {
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Calendar calendar = Calendar.getInstance();
-            switch (msg.what) {
-                case 1:
-                    minute = calendar.get(Calendar.MINUTE);
-                    second = calendar.get(Calendar.SECOND);
-                    hour = calendar.get(Calendar.HOUR_OF_DAY);
-                    try {
-                        imageButton1.setText(String.format("%02d", hour) + ":"
-                                + String.format("%02d", minute) + ":" + String.format("%02d", second)); //更新时
-                    } catch (Exception e) {
-                    }
-                    break;
-                case 2:
-                    Calendar calendar2 = Calendar.getInstance();
-                    hour = calendar2.get(Calendar.HOUR_OF_DAY);
-                    minute = calendar2.get(Calendar.MINUTE);
-                    second = calendar2.get(Calendar.SECOND);
-                    int time = hour * 3600 + minute * 60 + second;
-                    Countdown = hour0 * 3600 + minute0 * 60 + second0;
-                    if (time > Countdown)
-                        Countdown += 60 * 60 * 24;
-                    hour = (Countdown - time) / 3600;
-                    minute = (Countdown - time) / 60 % 60;
-                    second = (Countdown - time) % 60;
-                    try {
-                        imageButton1.setText(String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", second)); //更新时
-                    } catch (Exception e) {
-                    }
-
-                default:
-                    break;
-            }
-        }
+    public interface ItemOnClickInterface {
+        void onItemClick(View view);
     }
 
     private static clock getInstance() {
@@ -133,8 +67,6 @@ public class clock {
     }
 
     private clock() {
-        timeHandler = new timeHandler();
-        new TimeThread().start();
         createView();
         initInfo();
     }
@@ -162,10 +94,11 @@ public class clock {
     }
 
     private void initView() {
-        imageButton1 = toucherLayout.findViewById(R.id.imageButton1);
-        imageButton1.setOnClickListener(new itemOnclick());
-        imageButton1.setOnTouchListener(new OnTouchClick());
-        imageButton1.setOnLongClickListener(new itemLongOnclick());
+        imageButton = toucherLayout.findViewById(R.id.imageButton);
+
+        imageButton.setOnClickListener(new itemOnclick());
+        imageButton.setOnTouchListener(new OnTouchClick());
+        imageButton.setOnLongClickListener(new itemLongOnclick());
     }
 
     class OnTouchClick implements View.OnTouchListener {
@@ -211,10 +144,7 @@ public class clock {
         @Override
         public boolean onLongClick(View v) {
             if (!isMove) {
-                Log.d("ffd", "onLongClick: ");
-                Intent stop = new Intent(Myapplication.getContext(), MyService.class);
-                Myapplication.getContext().stopService(stop);
-                System.exit(0);
+                monDismiss();
             }
             return false;
         }
@@ -225,22 +155,8 @@ public class clock {
         public void onClick(View v) {
 
             switch (v.getId()) {
-                case R.id.imageButton1:
-                    if (!settingInfo.getBooleanInfo(settingInfo.Countdown))
-                        new timePick(Myapplication.getContext(), new timePick.onClick() {
-                            @Override
-                            public void onClick(int hour, int minute, int second) {
-                                isCountdownTask = true;
-                                hour0 = hour;
-                                minute0 = minute;
-                                second0 = second;
-                            }
-
-                            @Override
-                            public void onCancel() {
-                                isCountdownTask = false;
-                            }
-                        });
+                case R.id.imageButton:
+                    itemOnClickInterface.onItemClick(imageButton);
                     break;
                 default:
                     break;
@@ -252,11 +168,48 @@ public class clock {
     /**
      * 内部方法
      */
-    private int dip2px(int dpValue) {
-        final float scale = Myapplication.getContext().getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
+
+    class mTime {
+        public int hour;
+        public int minute;
+        public int second;
+        public int millisecond;
     }
 
+    private mTime getNetTime(String url2) {
+        String webUrl = "cn.pool.ntp.org";//中国科学院国家授时中心
+        mTime time = new mTime();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        URL url = new URL(webUrl);
+                        URLConnection uc = url.openConnection();
+                        uc.connect();
+                        long correctTime = uc.getDate();
+                        int h = (int) (correctTime / 1000 / 3600);
+                        int m = (int) (correctTime / 1000 / 60 % 60);
+                        int s = (int) (correctTime / 1000 % 60);
+                        int ms = (int) (correctTime % 1000);
+                        Log.d("1223", h + ":" + m + ":" + s + ":" + ms);
+//                        Calendar calendar = Calendar.getInstance();
+//                        calendar.setTimeInMillis(correctTime);
+//                        time.minute = calendar.get(Calendar.MINUTE);
+//                        time.second = calendar.get(Calendar.SECOND);
+//                        time.hour = calendar.get(Calendar.HOUR_OF_DAY);
+//                        time.millisecond = calendar.get(Calendar.MILLISECOND);
+                    } catch (Exception e) {
+                        Log.d("1223", "err");
+                    }
+                }
+            }
+        }).start();
+
+        return time;
+    }
+
+    /*刷新窗口*/
     private void updateWindows(boolean isStatusBar) {
         if (isStatusBar) {
             params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -270,41 +223,37 @@ public class clock {
 
     }
 
+    /*初始化窗口数据*/
     private void initInfo() {
+        params.x = settingInfo.getIntInfo(settingInfo.endX);
+        params.y = settingInfo.getIntInfo(settingInfo.endY);
         updateWindows(settingInfo.getBooleanInfo(settingInfo.StatusBar));
-        setBackgroundTranslate(settingInfo.getBooleanInfo(settingInfo.Translate));
-        setBlack(settingInfo.getBooleanInfo(settingInfo.Black));
+        setTextColor(settingInfo.getIntInfo(settingInfo.textColor));
+        setBgColor(settingInfo.getIntInfo(settingInfo.bgColor));
         setTextSize(settingInfo.getIntInfo(settingInfo.TextSize));
         setBackgroundHeight(settingInfo.getIntInfo(settingInfo.BackgroundHeight));
         setBackgroundWidth(settingInfo.getIntInfo(settingInfo.BackgroundWidth));
     }
 
+    /*设置字体大小*/
     private void setTextSize(int textSize) {
-        imageButton1.setTextSize(textSize);
+        imageButton.setTextSize(textSize);
     }
 
-    private void setBlack(Boolean isBlack) {
-        if (isBlack) {
-            imageButton1.setTextColor(0xffffffff);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                imageButton1.setBackground(Myapplication.getContext().getResources().getDrawable(R.drawable.shap2));
+    /*设置字体颜色，暂未使用*/
+    private void setTextColor(int color) {
+        imageButton.setTextColor(color);
 
-            }
-        } else {
-            imageButton1.setTextColor(0xff000000);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                imageButton1.setBackground(Myapplication.getContext().getResources().getDrawable(R.drawable.shap));
-            }
-        }
     }
 
-    private void setBlack2(int color) {
-        imageButton1.setTextColor(0xffffffff);
+    /*设置背景颜色，暂未使用*/
+    private void setBgColor(int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            imageButton1.setBackgroundColor(color);
+            imageButton.setBackgroundColor(color);
         }
     }
 
+    /*禁止移动*/
     private void stop(boolean info) {
         if (info) {
             stopMove = true;
@@ -315,81 +264,84 @@ public class clock {
         }
     }
 
-    private void setBackgroundTranslate(Boolean isBackground) {
-        if (isBackground) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                imageButton1.setBackground(Myapplication.getContext().getResources().getDrawable(R.drawable.touming));
-            }
-
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                imageButton1.setBackground(Myapplication.getContext().getResources().getDrawable(R.drawable.shap));
-            }
-        }
-
-    }
-
+    /*设置悬浮窗宽度*/
     private void setBackgroundWidth(int width) {
-        LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) imageButton1.getLayoutParams();
-        linearParams.width = dip2px(width);
-        imageButton1.setLayoutParams(linearParams);
+        LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) imageButton.getLayoutParams();
+        linearParams.width = ScreenTools.dip2px(width);
+        imageButton.setLayoutParams(linearParams);
         windowManager.updateViewLayout(toucherLayout, params);
     }
 
+    /*设置悬浮窗高度*/
     private void setBackgroundHeight(int height) {
-        LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) imageButton1.getLayoutParams();
-        linearParams.height = dip2px(height);
-        imageButton1.setLayoutParams(linearParams);
+        LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) imageButton.getLayoutParams();
+        linearParams.height = ScreenTools.dip2px(height);
+        imageButton.setLayoutParams(linearParams);
         windowManager.updateViewLayout(toucherLayout, params);
     }
 
+    /*关闭悬浮窗*/
     private void monDismiss() {
-        if (imageButton1 != null) {
-            mClock = null;
-            windowManager.removeView(toucherLayout);
-        }
+        settingInfo.setPositionInfo(params.x, params.y);
+        Intent stop = new Intent(Myapplication.getContext(), timeService.class);
+        Myapplication.getContext().stopService(stop);
+        windowManager.removeView(toucherLayout);
+        System.exit(0);
+
     }
 
     /**
      * 外部方法
      */
+    /*关闭悬浮窗*/
     public static void onDismiss() {
         getInstance().monDismiss();
     }
 
+    /*初始化*/
     public static void init() {
         getInstance();
     }
 
+    /*设置点击事件*/
+    public static void setItemOnClick(ItemOnClickInterface itemOnClickInterface) {
+        getInstance().itemOnClickInterface = itemOnClickInterface;
+    }
+
+    /*设置文字*/
+    public static void setText(String str) {
+        getInstance().imageButton.setText(str);
+    }
+
+    /*设置窗口数据*/
     public static void setWindowInfo(String key, Object info) {
         switch (key) {
-            case "hideSetPage":
+            case settingInfo.HideSetPage:
                 break;
-            case "translate":
-                getInstance().setBackgroundTranslate((Boolean) info);
+            case settingInfo.Countdown:
                 break;
-            case "countdown":
-                break;
-            case "black":
-                getInstance().setBlack((Boolean) info);
-                break;
-            case "statusBar":
+            case settingInfo.StatusBar:
                 getInstance().updateWindows((Boolean) info);
                 break;
-            case "stop":
+            case settingInfo.Fixed:
                 getInstance().stop((Boolean) info);
                 break;
-            case "textSize":
+            case settingInfo.textColor:
+                getInstance().setTextColor((Integer) info);
+                break;
+            case settingInfo.bgColor:
+                getInstance().setBgColor((Integer) info);
+                break;
+            case settingInfo.TextSize:
                 getInstance().setTextSize((Integer) info);
                 break;
-            case "backgroundWidth":
+            case settingInfo.BackgroundWidth:
                 getInstance().setBackgroundWidth((Integer) info);
                 break;
-            case "backgroundHeight":
+            case settingInfo.BackgroundHeight:
                 getInstance().setBackgroundHeight((Integer) info);
                 break;
             default:
-
                 break;
         }
     }

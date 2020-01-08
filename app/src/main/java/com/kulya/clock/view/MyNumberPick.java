@@ -48,7 +48,7 @@ public class MyNumberPick extends NumberPicker {
 
     private void updateView(View view) {
         if (view instanceof EditText) {
-            ((EditText) view).setTextColor(getResources().getColor(R.color.textcolor));
+            ((EditText) view).setTextColor(getResources().getColor(R.color.black));
             ((EditText) view).setTextSize(16);
         }
     }
